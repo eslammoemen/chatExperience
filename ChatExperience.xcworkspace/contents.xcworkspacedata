@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:ChatExperience.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:DNDCorePackage/DNDCorePackage.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:DNDResources/DNDResources.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:NetworkLayer/NetworkLayer.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:PhotoLibraryMedia/PhotoLibraryMedia.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:chatsModule/chatsModule.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Pods/Pods.xcodeproj">
+   </FileRef>
+</Workspace>

@@ -1,0 +1,15 @@
+[submodule "DNDCorepackage"]
+	path = DNDCorepackage
+	url = https://github.com/DeshNDezz/DNDCorePackage
+[submodule "NetworkLayer"]
+	path = NetworkLayer
+	url = https://github.com/DeshNDezz/NetworkLayer
+[submodule "chatsModule"]
+	path = chatsModule
+	url = https://github.com/DeshNDezz/chatsModule
+[submodule "PhotoLibraryMedia"]
+	path = PhotoLibraryMedia
+	url = https://github.com/DeshNDezz/PhotoLibraryMedia
+[submodule "DNDResources"]
+	path = DNDResources
+	url = https://github.com/DeshNDezz/DNDResources
