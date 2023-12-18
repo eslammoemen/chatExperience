@@ -13,3 +13,6 @@
 [submodule "DNDResources"]
 	path = DNDResources
 	url = https://github.com/DeshNDezz/DNDResources
+[submodule "DNDCorePackage"]
+	path = DNDCorePackage
+	url = https://github.com/DeshNDezz/DNDCorePackage
