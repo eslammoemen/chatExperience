@@ -15,6 +15,7 @@ final class ChatExperienceTests: XCTestCase {
     override func setUpWithError() throws {
        repository = IntegrationRepo()
         suit = IntegrationUsecase(repository: repository)
+        suit.delegate = self
     }
 
     override func tearDownWithError() throws {
@@ -32,5 +33,16 @@ final class ChatExperienceTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
+    
+    func testDidRecieveChatUserModel(model:chatUserUseCase) {
+        XCTAssertNotNil(model.about)
+    }
 
+}
+extension ChatExperienceTests :IntegrationUsecaseDelegateProtocol {
+    func didRecieveChatUserModel(model: chatsModule.chatUserUseCase) {
+       testDidRecieveChatUserModel(model: model)
+    }
+    
+    
 }
