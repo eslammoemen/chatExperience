@@ -11,6 +11,7 @@
 		9D2EF7732B2F06EA00117920 /* ChatExperienceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2EF7722B2F06EA00117920 /* ChatExperienceTests.swift */; };
 		9D2EF77A2B2F128700117920 /* NetworkLayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D2EF7792B2F128700117920 /* NetworkLayer.framework */; };
 		9D2EF77B2B2F128700117920 /* NetworkLayer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D2EF7792B2F128700117920 /* NetworkLayer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9DCE37892B31ADD200089654 /* ci_post_clone.sh in Resources */ = {isa = PBXBuildFile; fileRef = 9DCE37882B31ADD200089654 /* ci_post_clone.sh */; };
 		9DEF8AA92B2EEB7200C42DE9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DEF8AA82B2EEB7200C42DE9 /* AppDelegate.swift */; };
 		9DEF8AAB2B2EEB7200C42DE9 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DEF8AAA2B2EEB7200C42DE9 /* SceneDelegate.swift */; };
 		9DEF8AAD2B2EEB7200C42DE9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DEF8AAC2B2EEB7200C42DE9 /* ViewController.swift */; };
@@ -61,6 +62,7 @@
 		9D2EF7702B2F06E900117920 /* ChatExperienceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatExperienceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D2EF7722B2F06EA00117920 /* ChatExperienceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatExperienceTests.swift; sourceTree = "<group>"; };
 		9D2EF7792B2F128700117920 /* NetworkLayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NetworkLayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9DCE37882B31ADD200089654 /* ci_post_clone.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = ci_post_clone.sh; sourceTree = "<group>"; };
 		9DEF8AA52B2EEB7200C42DE9 /* ChatExperience.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ChatExperience.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9DEF8AA82B2EEB7200C42DE9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9DEF8AAA2B2EEB7200C42DE9 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -120,9 +122,18 @@
 			path = ChatExperienceTests;
 			sourceTree = "<group>";
 		};
+		9DCE37872B31ADD200089654 /* ci_scripts */ = {
+			isa = PBXGroup;
+			children = (
+				9DCE37882B31ADD200089654 /* ci_post_clone.sh */,
+			);
+			path = ci_scripts;
+			sourceTree = "<group>";
+		};
 		9DEF8A9C2B2EEB7200C42DE9 = {
 			isa = PBXGroup;
 			children = (
+				9DCE37872B31ADD200089654 /* ci_scripts */,
 				9DEF8AA72B2EEB7200C42DE9 /* ChatExperience */,
 				9D2EF7712B2F06EA00117920 /* ChatExperienceTests */,
 				9DEF8AA62B2EEB7200C42DE9 /* Products */,
@@ -263,6 +274,7 @@
 				9DEF8AB52B2EEB7400C42DE9 /* LaunchScreen.storyboard in Resources */,
 				9DEF8ACC2B2EEDAC00C42DE9 /* GoogleService-Info.plist in Resources */,
 				9DEF8AB22B2EEB7400C42DE9 /* Assets.xcassets in Resources */,
+				9DCE37892B31ADD200089654 /* ci_post_clone.sh in Resources */,
 				9DEF8AB02B2EEB7200C42DE9 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
