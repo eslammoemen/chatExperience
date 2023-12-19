@@ -57,12 +57,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        if CachceManager.shared.isAuthSaved {
             if let token = fcmToken {
 //                refreshToken(with: token)
                 self.hitLoginAPI(with:token)
             }
-        }
         print("token \(fcmToken)")
     }
     func application(application: UIApplication,
