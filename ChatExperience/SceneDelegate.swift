@@ -28,7 +28,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let suit = IntegrationUsecase(repository: repository)
 //        suit.getuser(with: 3)
 //        suit.pushNotifications(with: ["user_id":3,"title":"dend","title_body":"dwf","body":["example1":"dafdf"]])
-        suit.chatsLogin(with: [:])
+        //suit.chatsLogin(with: [:])
 //        suit.chatsSearch(with: ["name":"ahmed"])
         IQKeyboardManager.shared.enable = true
         window?.backgroundColor = .white
@@ -106,7 +106,7 @@ extension AppDelegate {
         let url = URL(string: "https://deshanddez.com/api/auth/login")!
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.post.rawValue
-        let httpBody:[String:Any] = ["email_or_mobile":"eslam@gmail.com","password":"123456","fcm_token":fcm,"device_type":"ios"]
+        let httpBody:[String:Any] = ["email_or_mobile":"user@gmail.com","password":"123456789","fcm_token":fcm,"device_type":"ios"]
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("en", forHTTPHeaderField: "Accept-Language")
