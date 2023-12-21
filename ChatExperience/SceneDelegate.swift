@@ -11,11 +11,12 @@ import IQKeyboardManagerSwift
 import chatsModule
 import Combine
 import DNDCorePackage
-
+import NetworkLayer
+import FirebaseMessaging
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
+    var cancellables = Set<AnyCancellable>()
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
         guard let windowScene = (scene as? UIWindowScene) else { return }
@@ -30,6 +31,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //        suit.pushNotifications(with: ["user_id":3,"title":"dend","title_body":"dwf","body":["example1":"dafdf"]])
         //suit.chatsLogin(with: [:])
 //        suit.chatsSearch(with: ["name":"ahmed"])
+        Messaging.messaging().delegate = self
         IQKeyboardManager.shared.enable = true
         window?.backgroundColor = .white
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
@@ -70,8 +72,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
 }
+extension SceneDelegate:MessagingDelegate{
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+//        if let token = fcmToken {
+            //                refreshToken(with: token)
+            self.hitLoginAPI(with:fcmToken ?? "someToken")
+//        }
+        print("token \(fcmToken)")
+    }
+}
 import Alamofire
-extension AppDelegate {
+extension SceneDelegate {
     func refreshToken(with fcm:String) {
         let url = URL(string: "https://deshanddez.com/api/auth/refresh_token")!
         var request = URLRequest(url: url)
@@ -106,7 +117,7 @@ extension AppDelegate {
         let url = URL(string: "https://deshanddez.com/api/auth/login")!
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.post.rawValue
-        let httpBody:[String:Any] = ["email_or_mobile":"user@gmail.com","password":"123456789","fcm_token":fcm,"device_type":"ios"]
+        let httpBody:[String:Any] = ["email_or_mobile":"eslam@gmail.com","password":"123456","fcm_token":fcm,"device_type":"ios"]
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("en", forHTTPHeaderField: "Accept-Language")
@@ -119,9 +130,27 @@ extension AppDelegate {
         AF.request(request)
             .validate()
             .publishData(queue: .global())
-            .tryMap { response throws -> [String:Any]? in
-                let jsonObj = try JSONSerialization.jsonObject(with: response.data!) as? [String:Any]
-                return jsonObj
+            .tryMap { response throws -> authUseCase in
+                print(String(data: response.data!, encoding: .utf8))
+                let decoeed = try JSONDecoder().decode(staticApiResponse<userData>.self, from: response.data!)
+                if let token = decoeed.data?.token {
+                    CachceManager.shared.set(element: "Bearer \(token)", key: .authToken)
+                }
+                if let profile = decoeed.data?.user?.profile {
+                    DispatchQueue.global().async {
+                        do {
+                            let imageData = try Data(contentsOf: URL(string: profile)!)
+                            DispatchQueue.main.async {
+                                UserDefaults.standard.set(imageData, forKey: "##UserImage")
+                            }
+                        }catch {
+                            
+                        }
+                        
+                    }
+                }
+
+                return authUseCase(loginModel: decoeed.data?.user)
             }
             .receive(on: RunLoop.main)
             .sink { completion in
@@ -131,12 +160,64 @@ extension AppDelegate {
                 case .finished:
                     print("finished")
                 }
-            } receiveValue: { responseData in
-                let data = responseData?["data"] as? [String:Any]
-                if let token = data?["token"] as? String {
-                    CachceManager().set(element: "Bearer \(token)", key: .authToken)
+            } receiveValue: { usermodel in
+                print(usermodel)
+                if let id = usermodel.id {
+                    CachceManager.shared.set(element: usermodel, key: .user)
                 }
-//                print(String(data: responseData, encoding: .utf8))
             }.store(in: &cancellables)
+    }
+}
+
+public struct authUseCase:Codable {
+    public let id: Int?
+    public let name, username, email: String?
+    public let mobile, title, brief: String?
+    public var image:String?
+    init(loginModel:User?) {
+        self.id = loginModel?.id
+        self.name = loginModel?.name
+        self.username = loginModel?.username
+        self.email = loginModel?.email
+        self.mobile = loginModel?.mobile
+        self.title = loginModel?.title
+        self.brief = loginModel?.brief
+        self.image = loginModel?.profile
+        //
+    }
+}
+
+
+public struct userData: Codable {
+    let token: String?
+    let user: User?
+}
+
+// MARK: - User
+struct User: Codable {
+    let id: Int?
+    let userType, name, username, email: String?
+    let mobile, title, brief, deviceType: String?
+    let fcmToken, gender, birthDate: String?
+    let emailVerified, mobileVerified, accountVerified: Bool?
+    let language: String?
+    let following, followers: Int?
+    let isMyAccount: Bool?
+    let profile, cover: String?
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case userType = "user_type"
+        case name, username, email, mobile, title, brief
+        case deviceType = "device_type"
+        case fcmToken = "fcm_token"
+        case gender
+        case birthDate = "birth_date"
+        case emailVerified = "email_verified"
+        case mobileVerified = "mobile_verified"
+        case accountVerified = "account_verified"
+        case language, following, followers
+        case isMyAccount = "is_my_account"
+        case profile, cover
     }
 }

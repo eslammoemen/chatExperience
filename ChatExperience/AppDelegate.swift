@@ -59,7 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
             if let token = fcmToken {
 //                refreshToken(with: token)
-                self.hitLoginAPI(with:token)
+//                self.hitLoginAPI(with:token)
             }
         print("token \(fcmToken)")
     }
