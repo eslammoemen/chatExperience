@@ -134,11 +134,12 @@ extension SceneDelegate {
             .publishData(queue: .global())
             .tryMap { response throws -> authUseCase in
                 print(String(data: response.data!, encoding: .utf8))
-                let decoeed = try JSONDecoder().decode(staticApiResponse<userData>.self, from: response.data!)
+                let decoeed = try JSONDecoder().decode(staticApiResponse<userData>.self, from: response.data!) as staticApiResponse<userData>
+                
                 if let token = decoeed.data?.token {
                     CachceManager.shared.set(element: "Bearer \(token)", key: .authToken)
                 }
-                if let profile = decoeed.data?.user?.profile {
+                if let profile = decoeed.data?.loginUser?.profile {
                     DispatchQueue.global().async {
                         do {
                             let imageData = try Data(contentsOf: URL(string: profile)!)
@@ -152,7 +153,7 @@ extension SceneDelegate {
                     }
                 }
 
-                return authUseCase(loginModel: decoeed.data?.user)
+                return authUseCase(loginModel:decoeed.data?.loginUser)
             }
             .receive(on: RunLoop.main)
             .sink { completion in
@@ -168,58 +169,5 @@ extension SceneDelegate {
                     CachceManager.shared.set(element: usermodel, key: .user)
                 }
             }.store(in: &cancellables)
-    }
-}
-
-public struct authUseCase:Codable {
-    public let id: Int?
-    public let name, username, email: String?
-    public let mobile, title, brief: String?
-    public var image:String?
-    init(loginModel:User?) {
-        self.id = loginModel?.id
-        self.name = loginModel?.name
-        self.username = loginModel?.username
-        self.email = loginModel?.email
-        self.mobile = loginModel?.mobile
-        self.title = loginModel?.title
-        self.brief = loginModel?.brief
-        self.image = loginModel?.profile
-        //
-    }
-}
-
-
-public struct userData: Codable {
-    let token: String?
-    let user: User?
-}
-
-// MARK: - User
-struct User: Codable {
-    let id: Int?
-    let userType, name, username, email: String?
-    let mobile, title, brief, deviceType: String?
-    let fcmToken, gender, birthDate: String?
-    let emailVerified, mobileVerified, accountVerified: Bool?
-    let language: String?
-    let following, followers: Int?
-    let isMyAccount: Bool?
-    let profile, cover: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case id
-        case userType = "user_type"
-        case name, username, email, mobile, title, brief
-        case deviceType = "device_type"
-        case fcmToken = "fcm_token"
-        case gender
-        case birthDate = "birth_date"
-        case emailVerified = "email_verified"
-        case mobileVerified = "mobile_verified"
-        case accountVerified = "account_verified"
-        case language, following, followers
-        case isMyAccount = "is_my_account"
-        case profile, cover
     }
 }
