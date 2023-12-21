@@ -27,6 +27,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //
         let repository = IntegrationRepo()
         let suit = IntegrationUsecase(repository: repository)
+//        suit.createCall(params: ["type":"audio","users_id[]":"8"])
+//        suit.addPeopleToCall(params: ["call_id":4,"users_id[]":10])
 //        suit.getuser(with: 3)
 //        suit.pushNotifications(with: ["user_id":3,"title":"dend","title_body":"dwf","body":["example1":"dafdf"]])
         //suit.chatsLogin(with: [:])
