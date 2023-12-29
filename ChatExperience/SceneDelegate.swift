@@ -13,12 +13,15 @@ import Combine
 import DNDCorePackage
 import NetworkLayer
 import FirebaseMessaging
+import FirebaseFirestore
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     var cancellables = Set<AnyCancellable>()
+    var user:authUseCase!
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
+        user = CachceManager.shared.get(key: .user)
         guard let windowScene = (scene as? UIWindowScene) else { return }
         PublicFonts.Register()
         //        MOLH.shared.activate()
@@ -42,6 +45,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         controller.setNavigationBarHidden(true, animated: true)
         window?.rootViewController = controller
         window?.makeKeyAndVisible()
+        
+       // self.hitLoginAPI(with:"someToken")
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -62,14 +67,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
+        if let myUser=user{
+            let doc = Firestore.firestore().collection("Users").document("\(myUser.id!)")
+            doc.setData(["isOnline":true])
+        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
+        if let myUser=user{
+            let doc = Firestore.firestore().collection("Users").document("\(myUser.id!)")
+            doc.setData(["isOnline":false])
+        }
     }
 
 
@@ -80,7 +88,7 @@ extension SceneDelegate:MessagingDelegate{
             //                refreshToken(with: token)
             self.hitLoginAPI(with:fcmToken ?? "someToken")
 //        }
-        print("token \(fcmToken)")
+        print("ourToken \(fcmToken)")
     }
 }
 import Alamofire
@@ -119,7 +127,7 @@ extension SceneDelegate {
         let url = URL(string: "https://deshanddez.com/api/auth/login")!
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.post.rawValue
-        let httpBody:[String:Any] = ["email_or_mobile":"eslam@gmail.com","password":"123456","fcm_token":fcm,"device_type":"ios"]
+        let httpBody:[String:Any] = ["email_or_mobile":"saadzayed@gmail.com","password":"123456","fcm_token":fcm,"device_type":"ios"]
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("en", forHTTPHeaderField: "Accept-Language")
@@ -128,12 +136,13 @@ extension SceneDelegate {
             return
         }
         //
+        print("ourToken login start")
         request.httpBody = body
         AF.request(request)
             .validate()
             .publishData(queue: .global())
             .tryMap { response throws -> authUseCase in
-                print(String(data: response.data!, encoding: .utf8))
+                print("ourToken \(String(data: response.data!, encoding: .utf8))")
                 let decoeed = try JSONDecoder().decode(staticApiResponse<userData>.self, from: response.data!) as staticApiResponse<userData>
                 
                 if let token = decoeed.data?.token {

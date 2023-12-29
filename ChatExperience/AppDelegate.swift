@@ -17,16 +17,16 @@ import Combine
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
    
     var cancellables = Set<AnyCancellable>()
-
-    
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         
+       
+        
         let settings = Firestore.firestore().settings
         settings.isPersistenceEnabled = false
         Firestore.firestore().settings = settings
-        print("Token \(Messaging.messaging().fcmToken)")
+        print("ourToken1 \(Messaging.messaging().fcmToken)")
         if #available(iOS 10.0, *) {
             // For iOS 10 display notification (sent via APNS)
             UNUserNotificationCenter.current().delegate = self
@@ -37,13 +37,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         } else {
             let settings: UIUserNotificationSettings =
             UIUserNotificationSettings(types: [.alert, .badge, .sound], categories: nil)
-            application.registerUserNotificationSettings(settings)
+            UIApplication.shared.registerUserNotificationSettings(settings)
+            UIApplication.shared.registerForRemoteNotifications()
         }
         Messaging.messaging().token(completion: {token,error in
             let token = Messaging.messaging().fcmToken
-            print("Token \(token)")
+            print("ourToken2 \(token)")
             if let token = token {
 //                self.hitLoginAPI(with:token)
+                
             }
         })
         application.registerForRemoteNotifications()
@@ -87,9 +89,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        print(userInfo)
+        print("notifications \(userInfo)")
     }
     
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                  didReceive response: UNNotificationResponse) async {
+        let userInfo = response.notification.request.content.userInfo
+
+        // ...
+
+        // With swizzling disabled you must let Messaging know about the message, for Analytics
+        // Messaging.messaging().appDidReceiveMessage(userInfo)
+
+        // Print full message.
+        print("notifications \(userInfo)")
+      }
     
 }
 
