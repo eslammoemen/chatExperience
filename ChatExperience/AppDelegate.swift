@@ -90,6 +90,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("notifications \(userInfo)")
+        let content = UNMutableNotificationContent()
+        content.title = userInfo["senderName"] as! String
+        content.subtitle = userInfo["message"] as! String
+        content.sound = UNNotificationSound.default
+
+        // show this notification five seconds from now
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+
+        // choose a random identifier
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+        // add our notification request
+        UNUserNotificationCenter.current().add(request)
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter,
