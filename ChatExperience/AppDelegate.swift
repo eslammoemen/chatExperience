@@ -17,7 +17,7 @@ import Combine
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
    
     var cancellables = Set<AnyCancellable>()
-    
+    var notification:UIView!
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         
@@ -90,19 +90,43 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("notifications \(userInfo)")
-        let content = UNMutableNotificationContent()
-        content.title = userInfo["senderName"] as! String
-        content.subtitle = userInfo["message"] as! String
-        content.sound = UNNotificationSound.default
-
-        // show this notification five seconds from now
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-
-        // choose a random identifier
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-
-        // add our notification request
-        UNUserNotificationCenter.current().add(request)
+//        let content = UNMutableNotificationContent()
+//        content.title = userInfo["senderName"] as! String
+//        content.subtitle = userInfo["message"] as! String
+//        content.sound = UNNotificationSound.default
+//
+//        // show this notification five seconds from now
+//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+//
+//        // choose a random identifier
+//        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+//
+//        // add our notification request
+//        UNUserNotificationCenter.current().add(request)
+        
+        if(UserDefaults.standard.bool(forKey: "isForground")){
+            if let root = UIApplication.topViewController() {
+                if((userInfo["type"] as? String) == "Chat"){
+                    showChatNotification(userInfo: userInfo, root: root)
+                }else if((userInfo["type"] as? String) == "Call"){
+                    if((userInfo["status"] as? String) == "0"){
+                        let vc = UIStoryboard.ChatsModule.instantiateViewController(withIdentifier:AudioCallController.className) as! AudioCallController
+                        
+                        vc.setData(meetingId: userInfo["meetingId"] as! String,isCalling: false, recipientId: userInfo["callerId"] as! String, recipientName: userInfo["callerName"] as! String, recipientImage: userInfo["callerImage"] as! String, videoEnabled: (userInfo["videoEnabled"] as! String) == "true" , audioEnabled: (userInfo["audioEnabled"] as! String) == "true")
+                        
+                        root.present(vc)
+                    }else if((userInfo["status"] as? String) == "-1"){
+                        if(root is AudioCallController){
+                            (root as! AudioCallController).incommingCallRejected()
+                        }
+                    }else if((userInfo["status"] as? String) == "1"){
+                        if(root is AudioCallController){
+                            (root as! AudioCallController).outgoingCallccepted()
+                        }
+                    }
+                }
+            }
+        }
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter,

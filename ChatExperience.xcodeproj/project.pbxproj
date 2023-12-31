@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		45F9CA50ED12ED32254B364B /* Pods_ChatExperience.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E47DE3EC4D62D119AE685D77 /* Pods_ChatExperience.framework */; };
+		8AB466F52B4219A1009582F2 /* ChatAppDelegateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB466F42B4219A1009582F2 /* ChatAppDelegateExtension.swift */; };
+		8AB466F72B4219C2009582F2 /* UIApplicationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB466F62B4219C2009582F2 /* UIApplicationExtension.swift */; };
 		9D2EF7732B2F06EA00117920 /* ChatExperienceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2EF7722B2F06EA00117920 /* ChatExperienceTests.swift */; };
 		9D2EF77A2B2F128700117920 /* NetworkLayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D2EF7792B2F128700117920 /* NetworkLayer.framework */; };
 		9D2EF77B2B2F128700117920 /* NetworkLayer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9D2EF7792B2F128700117920 /* NetworkLayer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -59,6 +61,8 @@
 
 /* Begin PBXFileReference section */
 		32E725571F87B6A430D80C94 /* Pods-ChatExperience.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatExperience.debug.xcconfig"; path = "Target Support Files/Pods-ChatExperience/Pods-ChatExperience.debug.xcconfig"; sourceTree = "<group>"; };
+		8AB466F42B4219A1009582F2 /* ChatAppDelegateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAppDelegateExtension.swift; sourceTree = "<group>"; };
+		8AB466F62B4219C2009582F2 /* UIApplicationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExtension.swift; sourceTree = "<group>"; };
 		9D2EF7702B2F06E900117920 /* ChatExperienceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatExperienceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9D2EF7722B2F06EA00117920 /* ChatExperienceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatExperienceTests.swift; sourceTree = "<group>"; };
 		9D2EF7792B2F128700117920 /* NetworkLayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = NetworkLayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -163,6 +167,8 @@
 				9DEF8AB12B2EEB7400C42DE9 /* Assets.xcassets */,
 				9DEF8AB32B2EEB7400C42DE9 /* LaunchScreen.storyboard */,
 				9DEF8AB62B2EEB7400C42DE9 /* Info.plist */,
+				8AB466F42B4219A1009582F2 /* ChatAppDelegateExtension.swift */,
+				8AB466F62B4219C2009582F2 /* UIApplicationExtension.swift */,
 			);
 			path = ChatExperience;
 			sourceTree = "<group>";
@@ -338,6 +344,8 @@
 			files = (
 				9DEF8AAD2B2EEB7200C42DE9 /* ViewController.swift in Sources */,
 				9DEF8AA92B2EEB7200C42DE9 /* AppDelegate.swift in Sources */,
+				8AB466F72B4219C2009582F2 /* UIApplicationExtension.swift in Sources */,
+				8AB466F52B4219A1009582F2 /* ChatAppDelegateExtension.swift in Sources */,
 				9DEF8AAB2B2EEB7200C42DE9 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
