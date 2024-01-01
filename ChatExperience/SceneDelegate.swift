@@ -30,12 +30,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //
         let repository = IntegrationRepo()
         let suit = IntegrationUsecase(repository: repository)
+        suit.updateUserSettings(params: ["notifications":1,"last_seen":1,"profile_photo":1,"about":1,"calls":1,"groups":1,"status":1])
 //        suit.createCall(params: ["type":"audio","users_id[]":"8"])
 //        suit.addPeopleToCall(params: ["call_id":4,"users_id[]":10])
 //        suit.getuser(with: 3)
 //        suit.pushNotifications(with: ["user_id":3,"title":"dend","title_body":"dwf","body":["example1":"dafdf"]])
         //suit.chatsLogin(with: [:])
-//        suit.chatsSearch(with: ["name":"ahmed"])
+        //        suit.chatsSearch(with: ["name":"ahmed"])
+        
+        hitLoginAPI(with: "someToken simulator")
+        
+        //
         Messaging.messaging().delegate = self
         IQKeyboardManager.shared.enable = true
         window?.backgroundColor = .white
@@ -86,43 +91,15 @@ extension SceneDelegate:MessagingDelegate{
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
 //        if let token = fcmToken {
             //                refreshToken(with: token)
-            self.hitLoginAPI(with:fcmToken ?? "someToken")
+        if !CachceManager.shared.isAuthSaved {
+            hitLoginAPI(with:fcmToken ?? "someToken")
+        }
 //        }
         print("ourToken \(fcmToken)")
     }
 }
 import Alamofire
 extension SceneDelegate {
-    func refreshToken(with fcm:String) {
-        let url = URL(string: "https://deshanddez.com/api/auth/refresh_token")!
-        var request = URLRequest(url: url)
-        request.httpMethod = HTTPMethod.post.rawValue
-//        let httpBody:[String:Any] = ["email_or_mobile":"eslam@gmail.coms","password":"123456","fcm_token":fcm,"device_type":"ios"]
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        let token:String? = CachceManager.shared.get(key: .authToken)
-        
-        request.setValue("Bearer \(token ?? "")", forHTTPHeaderField: "Authorization")
-//        guard let body = try? JSONSerialization.data(withJSONObject: httpBody, options: []) else {
-//            return
-//        }
-        //
-//        request.httpBody = body
-        AF.request(request)
-            .validate()
-            .publishData(queue: .global())
-            .receive(on: RunLoop.main)
-            .sink { completion in
-                switch completion {
-                case .failure(let error):
-                    print(error)
-                case .finished:
-                    print("finished")
-                }
-            } receiveValue: { responseData in
-                print(String(data: responseData.data!, encoding: .utf8))
-            }.store(in: &cancellables)
-        
-    }
     func hitLoginAPI(with fcm:String) {
         let url = URL(string: "https://deshanddez.com/api/auth/login")!
         var request = URLRequest(url: url)

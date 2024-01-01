@@ -13,6 +13,8 @@ import chatsModule
 import AVKit
 import DNDCorePackage
 import Combine
+import Alamofire
+
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
    
@@ -60,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
             if let token = fcmToken {
-//                refreshToken(with: token)
+                refreshToken(with: token)
 //                self.hitLoginAPI(with:token)
             }
         print("token \(fcmToken)")
@@ -144,3 +146,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
 }
 
+extension AppDelegate {
+    func refreshToken(with fcm:String) {
+        let url = URL(string: "https://deshanddez.com/api/auth/refresh_token")!
+        var request = URLRequest(url: url)
+        request.httpMethod = HTTPMethod.post.rawValue
+        //        let httpBody:[String:Any] = ["email_or_mobile":"eslam@gmail.coms","password":"123456","fcm_token":fcm,"device_type":"ios"]
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let token:String? = CachceManager.shared.get(key: .authToken)
+        
+        request.setValue("Bearer \(token ?? "")", forHTTPHeaderField: "Authorization")
+        //        guard let body = try? JSONSerialization.data(withJSONObject: httpBody, options: []) else {
+        //            return
+        //        }
+        //
+        //        request.httpBody = body
+        AF.request(request)
+            .validate()
+            .publishData(queue: .global())
+            .receive(on: RunLoop.main)
+            .sink { completion in
+                switch completion {
+                case .failure(let error):
+                    print(error)
+                case .finished:
+                    print("finished")
+                }
+            } receiveValue: { responseData in
+                print(String(data: responseData.data!, encoding: .utf8))
+            }.store(in: &cancellables)
+        
+    }
+}
