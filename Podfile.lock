@@ -2,6 +2,7 @@ PODS:
   - Alamofire (5.8.0)
   - BSImagePicker (3.3.1)
   - CropViewController (2.6.1)
+  - CryptoSwift (1.8.0)
   - IQKeyboardManagerSwift (6.5.16)
   - KDCircularProgress (1.5.4)
   - Kingfisher (7.8.1)
@@ -40,6 +41,7 @@ DEPENDENCIES:
   - Alamofire
   - BSImagePicker (~> 3.1)
   - CropViewController
+  - CryptoSwift (~> 1.8.0)
   - IQKeyboardManagerSwift
   - KDCircularProgress
   - KingfisherWebP
@@ -56,6 +58,7 @@ SPEC REPOS:
     - Alamofire
     - BSImagePicker
     - CropViewController
+    - CryptoSwift
     - IQKeyboardManagerSwift
     - KDCircularProgress
     - Kingfisher
@@ -86,6 +89,7 @@ SPEC CHECKSUMS:
   Alamofire: 0e92e751b3e9e66d7982db43919d01f313b8eb91
   BSImagePicker: 0fe04b574d4d6b81093785d2af6c26227efc8428
   CropViewController: 58fb440f30dac788b129d2a1f24cffdcb102669c
+  CryptoSwift: 52aaf3fce7337552863b1d952e408085f0e65030
   IQKeyboardManagerSwift: 12d89768845bb77b55cc092ecc2b1f9370f06b76
   KDCircularProgress: 98200c6b8e85d22bc04eb644721d3b1e12b0686b
   Kingfisher: 63f677311d36a3473f6b978584f8a3845d023dc5
@@ -103,6 +107,6 @@ SPEC CHECKSUMS:
   UIPiPView: 5d60e5976a586cec12c411241aff3fcbd3ceb2ac
   VideoSDKRTC: 9565f86deed20b49866bf4563a69e9ad871921e4
 
-PODFILE CHECKSUM: 092dc092b678cd3a56310ce7e495fa675ae469fb
+PODFILE CHECKSUM: a93fc07a1de63edcf825b9896f1e70ee5ee7e6ef
 
 COCOAPODS: 1.14.2

@@ -81,11 +81,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
         
-        if let root = UIApplication.topViewController() {
-            if(root is AudioCallController){
-                (root as! AudioCallController).isForground(flag: true)
-            }
-        }
+//        if let root = UIApplication.topViewController() {
+//            if(root is ConversationController){
+//                (root as! ConversationController).isForground(flag: true)
+//            }
+//        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -98,12 +98,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 doc.setData(["isOnline":false,"activeStatus":mySettings.toJSON()["status"] as! Bool])
             }
         }
-        if let root = UIApplication.topViewController() {
-            print(root is AudioCallController)
-            if(root is AudioCallController){
-                (root as! AudioCallController).isForground(flag: false)
-            }
-        }
+//        if let root = UIApplication.topViewController() {
+//            print(root is ConversationController)
+//            if(root is ConversationController){
+//                (root as! ConversationController).isForground(flag: false)
+//            }
+//        }
     }
 
 
@@ -147,6 +147,9 @@ extension SceneDelegate {
                 
                 if let token = decoeed.data?.token {
                     CachceManager.shared.set(element: "Bearer \(token)", key: .authToken)
+                }
+                if let videoToken = decoeed.data?.video_token {
+                    CachceManager.shared.set(element: videoToken, key: .videoToken)
                 }
                 if let profile = decoeed.data?.loginUser?.profile {
                     DispatchQueue.global().async {

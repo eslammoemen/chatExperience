@@ -19,7 +19,8 @@ import KingfisherWebP
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
-    
+    var notificationTimer : Timer!
+    var notificationRootController : UIViewController!
     var cancellables = Set<AnyCancellable>()
     var notification:UIView!
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -104,20 +105,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("notifications \(userInfo) \(UserDefaults.standard.bool(forKey: "isForground"))")
-        //        let content = UNMutableNotificationContent()
-        //        content.title = userInfo["senderName"] as! String
-        //        content.subtitle = userInfo["message"] as! String
-        //        content.sound = UNNotificationSound.default
-        //
-        //        // show this notification five seconds from now
-        //        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-        //
-        //        // choose a random identifier
-        //        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-        //
-        //        // add our notification request
-        //        UNUserNotificationCenter.current().add(request)
-        
+       
         if(UserDefaults.standard.bool(forKey: "isForground")){
             if let root = UIApplication.topViewController() {
                 if((userInfo["type"] as? String) == "Chat"){
@@ -166,7 +154,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 func userNotificationCenter(_ center: UNUserNotificationCenter,
                             didReceive response: UNNotificationResponse) async {
     let userInfo = response.notification.request.content.userInfo
-    
+    if let root = UIApplication.topViewController() {
+        if((userInfo["type"] as? String) == "Chat"){
+            let vc = UIStoryboard.ChatsModule.instantiateViewController(withIdentifier:ConversationController.className) as! ConversationController
+            let user:authUseCase! = CachceManager.shared.get(key: .user)
+            vc.setData(myId: "\(user.id!)", myName: user.name!, myImage: user.image!, recipientId: userInfo["senderId"] as! String, recipientName: userInfo["senderName"] as! String, recipientImage: userInfo["senderImage"] as! String)
+            vc.modalPresentationStyle = .fullScreen
+            if(root is ConversationController){
+                root.dismiss(animated: false,completion: {
+                    if let root = UIApplication.topViewController() {
+                        root.present(vc, animated: true)
+                    }
+                })
+            }else{
+                root.present(vc,animated: true)
+            }
+        }
+    }
+
     // ...
     
     // With swizzling disabled you must let Messaging know about the message, for Analytics

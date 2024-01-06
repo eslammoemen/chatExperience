@@ -24,6 +24,7 @@ def _CorePods
   pod 'VideoSDKRTC'
   pod 'Alamofire'
   pod 'PIPKit'
+  pod 'CryptoSwift', '~> 1.8.0'
   pod 'SwiftyJSON', '~> 4.0'
   pod 'UIPiPView', :git => 'https://github.com/uakihir0/UIPiPView/', :branch => 'main'
   end

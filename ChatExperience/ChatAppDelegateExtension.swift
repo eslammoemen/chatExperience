@@ -16,8 +16,11 @@ import DNDCorePackage
 import Combine
 extension AppDelegate{
     func showChatNotification(userInfo: [AnyHashable : Any],root:UIViewController){
+        notificationRootController = root
         let statusBarHeight = UIApplication.shared.statusBarFrame.height
         if(notification != nil){
+            notificationTimer.invalidate()
+            notification.layer.removeAllAnimations()
             notification.removeFromSuperview()
         }
         notification = UIView(frame: CGRect(x: 16, y: -(statusBarHeight + 86), width: root.view.frame.width-32, height: 70))
@@ -31,7 +34,12 @@ extension AppDelegate{
         let name = UILabel(frame: CGRect(x: 82, y: 10, width: 200, height: 20))
         name.textColor = .black
         name.font = name.font.withSize(14)
-        name.text = userInfo["senderName"] as? String
+        var recipientName = userInfo["senderName"] as! String
+        if(recipientName.count>20){
+            let index = recipientName.index(recipientName.startIndex, offsetBy: 20)
+            recipientName = String(recipientName.prefix(upTo: index))
+        }
+        name.text = recipientName
         
         let messageIcon = UIImageView(frame: CGRect(x: 82, y: 30, width: 16, height: 16))
         var messageText = ""
@@ -54,6 +62,16 @@ extension AppDelegate{
             messageIcon.setImageColor(color: UIColor.black)
             messageX = 102
         }
+        
+        let date = UILabel(frame: CGRect(x: root.view.frame.width - 80, y: 10, width: 70, height: 20))
+        date.font = date.font.withSize(16)
+        date.textColor = .black
+        date.numberOfLines = 1
+        let dateFormatterPrint = DateFormatter()
+        dateFormatterPrint.dateFormat = "hh:mm a"
+        date.text = dateFormatterPrint.string(from: Date())
+        
+        
         let message = UILabel(frame: CGRect(x: messageX, y: 27, width: 200, height: 20))
         message.font = message.font.withSize(14)
         message.textColor = .black
@@ -71,6 +89,7 @@ extension AppDelegate{
         UIView.animate(withDuration: 0.7, animations: { [self] in
             notification.frame = CGRect(x: 16, y: statusBarHeight + 16, width: root.view.frame.width-32, height: 70)
         })
+        notificationTimer = Timer.scheduledTimer(timeInterval: 3.7, target: self, selector: #selector(fireTimer), userInfo: nil, repeats: true)
         
         let tap = NotificationGestureRecognizer(target: self, action: #selector(self.tapOnNotification(_:)))
         tap.userInfo = userInfo
@@ -78,8 +97,14 @@ extension AppDelegate{
         notification.addGestureRecognizer(tap)
         
     }
+    @objc func fireTimer() {
+        UIView.animate(withDuration: 0.7, animations: { [self] in
+            notification.frame = CGRect(x: 16, y: -70, width: notificationRootController.view.frame.width-32, height: 70)
+        })
+    }
     
     @objc func tapOnNotification(_ sender: NotificationGestureRecognizer){
+        print("here")
         let userInfo = sender.userInfo
         if((userInfo!["type"] as! String) == "Chat"){
             let vc = UIStoryboard.ChatsModule.instantiateViewController(withIdentifier:ConversationController.className) as! ConversationController
