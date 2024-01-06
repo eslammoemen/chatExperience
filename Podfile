@@ -18,11 +18,14 @@ def _CorePods
   _resource
   _corePackage
   pod 'IQKeyboardManagerSwift'
-  pod 'Kingfisher', '~> 7.0'
+  pod "KingfisherWebP"
   pod "BSImagePicker", "~> 3.1"
   pod 'KDCircularProgress'
   pod 'VideoSDKRTC'
   pod 'Alamofire'
+  pod 'PIPKit'
+  pod 'SwiftyJSON', '~> 4.0'
+  pod 'UIPiPView', :git => 'https://github.com/uakihir0/UIPiPView/', :branch => 'main'
   end
 target 'ChatExperience' do
   # Comment the next line if you don't want to use dynamic frameworks
@@ -36,6 +39,8 @@ post_install do |installer|
     target.build_configurations.each do |config|
 	if target.name == 'R.swift.Library' ||
 	   target.name == 'NotificationBannerSwift' ||
+	   target.name == 'SwiftyJSON' ||
+	   target.name == 'PIPKit' ||
            target.name == 'CropViewController'
        	   config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '11.0'
       	end

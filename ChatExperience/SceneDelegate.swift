@@ -21,7 +21,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var user:authUseCase!
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
-        user = CachceManager.shared.get(key: .user)
         guard let windowScene = (scene as? UIWindowScene) else { return }
         PublicFonts.Register()
         //        MOLH.shared.activate()
@@ -30,17 +29,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //
         let repository = IntegrationRepo()
         let suit = IntegrationUsecase(repository: repository)
-        suit.updateUserSettings(params: ["notifications":1,"last_seen":1,"profile_photo":1,"about":1,"calls":1,"groups":1,"status":1])
-//        suit.createCall(params: ["type":"audio","users_id[]":"8"])
+//        suit.updateUserSettings(params: ["notifications":1,"last_seen":1,"profile_photo":1,"about":1,"calls":1,"groups":1,"status":1])
+//       suit.createCall(params: ["type":"audio","users_id[]":"8"])
 //        suit.addPeopleToCall(params: ["call_id":4,"users_id[]":10])
 //        suit.getuser(with: 3)
 //        suit.pushNotifications(with: ["user_id":3,"title":"dend","title_body":"dwf","body":["example1":"dafdf"]])
         //suit.chatsLogin(with: [:])
         //        suit.chatsSearch(with: ["name":"ahmed"])
         
-        hitLoginAPI(with: "someToken simulator")
-        let userSettings:updateUserSettingUseCase? = CachceManager.shared.get(key: .chatUserSettings)
-        print(userSettings)
+       // hitLoginAPI(with: "someToken simulator")
+       
         //
         Messaging.messaging().delegate = self
         IQKeyboardManager.shared.enable = true
@@ -73,16 +71,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-        if let myUser=user{
-            let doc = Firestore.firestore().collection("Users").document("\(myUser.id!)")
-            doc.setData(["isOnline":true])
+        UserDefaults.standard.set(true, forKey: "isForground")
+        let userSettings:updateUserSettingUseCase? = CachceManager.shared.get(key: .chatUserSettings)
+        user = CachceManager.shared.get(key: .user)
+        if let myUser=user,let mySettings=userSettings{
+            if(mySettings.toJSON()["status"] as! Bool && mySettings.toJSON()["isOnline"] as! Bool){
+                let doc = Firestore.firestore().collection("Users").document("\(myUser.id!)")
+                doc.setData(["isOnline":true,"activeStatus":mySettings.toJSON()["status"] as! Bool])
+            }
+        }
+        
+        if let root = UIApplication.topViewController() {
+            if(root is AudioCallController){
+                (root as! AudioCallController).isForground(flag: true)
+            }
         }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        if let myUser=user{
-            let doc = Firestore.firestore().collection("Users").document("\(myUser.id!)")
-            doc.setData(["isOnline":false])
+        UserDefaults.standard.set(false, forKey: "isForground")
+        let userSettings:updateUserSettingUseCase? = CachceManager.shared.get(key: .chatUserSettings)
+        user = CachceManager.shared.get(key: .user)
+        if let myUser=user,let mySettings=userSettings{
+            if(mySettings.toJSON()["status"] as! Bool && mySettings.toJSON()["isOnline"] as! Bool){
+                let doc = Firestore.firestore().collection("Users").document("\(myUser.id!)")
+                doc.setData(["isOnline":false,"activeStatus":mySettings.toJSON()["status"] as! Bool])
+            }
+        }
+        if let root = UIApplication.topViewController() {
+            print(root is AudioCallController)
+            if(root is AudioCallController){
+                (root as! AudioCallController).isForground(flag: false)
+            }
         }
     }
 
@@ -93,10 +113,12 @@ extension SceneDelegate:MessagingDelegate{
 //        if let token = fcmToken {
             //                refreshToken(with: token)
         if !CachceManager.shared.isAuthSaved {
-            hitLoginAPI(with:fcmToken ?? "someToken")
+            print("ourToken6 \(fcmToken)")
+            
         }
+        hitLoginAPI(with:fcmToken ?? "someToken")
 //        }
-        print("ourToken \(fcmToken)")
+        print("ourToken6 \(fcmToken)")
     }
 }
 import Alamofire

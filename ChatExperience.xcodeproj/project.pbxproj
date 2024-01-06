@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		45F9CA50ED12ED32254B364B /* Pods_ChatExperience.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E47DE3EC4D62D119AE685D77 /* Pods_ChatExperience.framework */; };
+		8A71D1492B499C200068FDCA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A71D1482B499C200068FDCA /* Security.framework */; };
+		8A71D14A2B499C290068FDCA /* Security.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8A71D1482B499C200068FDCA /* Security.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8AB466F52B4219A1009582F2 /* ChatAppDelegateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB466F42B4219A1009582F2 /* ChatAppDelegateExtension.swift */; };
 		8AB466F72B4219C2009582F2 /* UIApplicationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB466F62B4219C2009582F2 /* UIApplicationExtension.swift */; };
 		9D2EF7732B2F06EA00117920 /* ChatExperienceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2EF7722B2F06EA00117920 /* ChatExperienceTests.swift */; };
@@ -48,6 +50,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				8A71D14A2B499C290068FDCA /* Security.framework in Embed Frameworks */,
 				9DEF8ACE2B2EEED500C42DE9 /* chatsModule.framework in Embed Frameworks */,
 				9DEF8AD12B2EEEDA00C42DE9 /* DNDCorePackage.framework in Embed Frameworks */,
 				9D2EF77B2B2F128700117920 /* NetworkLayer.framework in Embed Frameworks */,
@@ -61,6 +64,7 @@
 
 /* Begin PBXFileReference section */
 		32E725571F87B6A430D80C94 /* Pods-ChatExperience.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatExperience.debug.xcconfig"; path = "Target Support Files/Pods-ChatExperience/Pods-ChatExperience.debug.xcconfig"; sourceTree = "<group>"; };
+		8A71D1482B499C200068FDCA /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		8AB466F42B4219A1009582F2 /* ChatAppDelegateExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAppDelegateExtension.swift; sourceTree = "<group>"; };
 		8AB466F62B4219C2009582F2 /* UIApplicationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExtension.swift; sourceTree = "<group>"; };
 		9D2EF7702B2F06E900117920 /* ChatExperienceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatExperienceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,6 +101,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A71D1492B499C200068FDCA /* Security.framework in Frameworks */,
 				9DEF8AD22B2EEEDB00C42DE9 /* DNDResources.framework in Frameworks */,
 				45F9CA50ED12ED32254B364B /* Pods_ChatExperience.framework in Frameworks */,
 				9DEF8AD42B2EEEDD00C42DE9 /* PhotoLibraryMedia.framework in Frameworks */,
@@ -176,6 +181,7 @@
 		9E0A0A788190336F8648E26E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8A71D1482B499C200068FDCA /* Security.framework */,
 				9D2EF7792B2F128700117920 /* NetworkLayer.framework */,
 				9DEF8AC12B2EED6800C42DE9 /* chatsModule.framework */,
 				9DEF8AC22B2EED6800C42DE9 /* DNDResources.framework */,
@@ -545,6 +551,10 @@
 				DEVELOPMENT_TEAM = 948X4P5J2H;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ChatExperience/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = Hello;
+				INFOPLIST_KEY_NSDocumentsFolderUsageDescription = Hello;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = Hello;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = Helo;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -576,6 +586,10 @@
 				DEVELOPMENT_TEAM = 948X4P5J2H;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ChatExperience/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = Hello;
+				INFOPLIST_KEY_NSDocumentsFolderUsageDescription = Hello;
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = Hello;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = Helo;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;

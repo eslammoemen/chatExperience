@@ -14,16 +14,28 @@ import AVKit
 import DNDCorePackage
 import Combine
 import Alamofire
+import Kingfisher
+import KingfisherWebP
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
-   
+    
     var cancellables = Set<AnyCancellable>()
     var notification:UIView!
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         
-       
+        let modifier = AnyModifier { request in
+            var req = request
+            req.addValue("image/webp */*", forHTTPHeaderField: "Accept")
+            return req
+        }
+        
+        KingfisherManager.shared.defaultOptions += [
+            .processor(WebPProcessor.default),
+            .cacheSerializer(WebPSerializer.default),
+            .requestModifier(modifier)
+        ]
         
         let settings = Firestore.firestore().settings
         settings.isPersistenceEnabled = false
@@ -46,7 +58,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             let token = Messaging.messaging().fcmToken
             print("ourToken2 \(token)")
             if let token = token {
-//                self.hitLoginAPI(with:token)
+                //                self.hitLoginAPI(with:token)
                 
             }
         })
@@ -61,10 +73,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-            if let token = fcmToken {
-                refreshToken(with: token)
-//                self.hitLoginAPI(with:token)
-            }
+        if let token = fcmToken {
+            refreshToken(with: token)
+            //                self.hitLoginAPI(with:token)
+        }
         print("token \(fcmToken)")
     }
     func application(application: UIApplication,
@@ -91,59 +103,79 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        print("notifications \(userInfo)")
-//        let content = UNMutableNotificationContent()
-//        content.title = userInfo["senderName"] as! String
-//        content.subtitle = userInfo["message"] as! String
-//        content.sound = UNNotificationSound.default
-//
-//        // show this notification five seconds from now
-//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
-//
-//        // choose a random identifier
-//        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-//
-//        // add our notification request
-//        UNUserNotificationCenter.current().add(request)
+        print("notifications \(userInfo) \(UserDefaults.standard.bool(forKey: "isForground"))")
+        //        let content = UNMutableNotificationContent()
+        //        content.title = userInfo["senderName"] as! String
+        //        content.subtitle = userInfo["message"] as! String
+        //        content.sound = UNNotificationSound.default
+        //
+        //        // show this notification five seconds from now
+        //        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 0.1, repeats: false)
+        //
+        //        // choose a random identifier
+        //        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+        //
+        //        // add our notification request
+        //        UNUserNotificationCenter.current().add(request)
         
         if(UserDefaults.standard.bool(forKey: "isForground")){
             if let root = UIApplication.topViewController() {
                 if((userInfo["type"] as? String) == "Chat"){
                     showChatNotification(userInfo: userInfo, root: root)
                 }else if((userInfo["type"] as? String) == "Call"){
-                    if((userInfo["status"] as? String) == "0"){
+                    if((userInfo["state"] as? String) == "0"){
                         let vc = UIStoryboard.ChatsModule.instantiateViewController(withIdentifier:AudioCallController.className) as! AudioCallController
                         
                         vc.setData(meetingId: userInfo["meetingId"] as! String,isCalling: false, recipientId: userInfo["callerId"] as! String, recipientName: userInfo["callerName"] as! String, recipientImage: userInfo["callerImage"] as! String, videoEnabled: (userInfo["videoEnabled"] as! String) == "true" , audioEnabled: (userInfo["audioEnabled"] as! String) == "true")
                         
                         root.present(vc)
-                    }else if((userInfo["status"] as? String) == "-1"){
+                    }else if((userInfo["state"] as? String) == "-1"){
                         if(root is AudioCallController){
                             (root as! AudioCallController).incommingCallRejected()
                         }
-                    }else if((userInfo["status"] as? String) == "1"){
+                    }else if((userInfo["state"] as? String) == "1"){
                         if(root is AudioCallController){
                             (root as! AudioCallController).outgoingCallccepted()
                         }
                     }
                 }
             }
+        }else{
+            if((userInfo["type"] as? String) == "Call"){
+                if let root = UIApplication.topViewController() {
+                    if((userInfo["state"] as? String) == "0"){
+                        let vc = UIStoryboard.ChatsModule.instantiateViewController(withIdentifier:AudioCallController.className) as! AudioCallController
+                        
+                        vc.setData(meetingId: userInfo["meetingId"] as! String,isCalling: false, recipientId: userInfo["callerId"] as! String, recipientName: userInfo["callerName"] as! String, recipientImage: userInfo["callerImage"] as! String, videoEnabled: (userInfo["videoEnabled"] as! String) == "true" , audioEnabled: (userInfo["audioEnabled"] as! String) == "true")
+                        
+                        root.present(vc)
+                }else if((userInfo["state"] as? String) == "-1"){
+                    if(root is AudioCallController){
+                        (root as! AudioCallController).incommingCallRejected()
+                    }
+                }else if((userInfo["state"] as? String) == "1"){
+                    if(root is AudioCallController){
+                        (root as! AudioCallController).outgoingCallccepted()
+                    }
+                }
+            }
         }
     }
+}
+
+func userNotificationCenter(_ center: UNUserNotificationCenter,
+                            didReceive response: UNNotificationResponse) async {
+    let userInfo = response.notification.request.content.userInfo
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                  didReceive response: UNNotificationResponse) async {
-        let userInfo = response.notification.request.content.userInfo
-
-        // ...
-
-        // With swizzling disabled you must let Messaging know about the message, for Analytics
-        // Messaging.messaging().appDidReceiveMessage(userInfo)
-
-        // Print full message.
-        print("notifications \(userInfo)")
-      }
+    // ...
     
+    // With swizzling disabled you must let Messaging know about the message, for Analytics
+    // Messaging.messaging().appDidReceiveMessage(userInfo)
+    
+    // Print full message.
+    print("notifications \(userInfo) \(UserDefaults.standard.bool(forKey: "isForground"))")
+}
+
 }
 
 extension AppDelegate {
