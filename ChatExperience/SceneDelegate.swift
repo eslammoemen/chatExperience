@@ -38,7 +38,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //        suit.chatsSearch(with: ["name":"ahmed"])
         
        // hitLoginAPI(with: "someToken simulator")
-       
+        suit.report(params: ["name":"test","explain":"test"])
         //
         Messaging.messaging().delegate = self
         IQKeyboardManager.shared.enable = true
