@@ -114,7 +114,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                     if((userInfo["state"] as? String) == "0"){
                         let vc = UIStoryboard.ChatsModule.instantiateViewController(withIdentifier:AudioCallController.className) as! AudioCallController
                         
-                        vc.setData(meetingId: userInfo["meetingId"] as! String,isCalling: false, recipientId: userInfo["callerId"] as! String, recipientName: userInfo["callerName"] as! String, recipientImage: userInfo["callerImage"] as! String, videoEnabled: (userInfo["videoEnabled"] as! String) == "true" , audioEnabled: (userInfo["audioEnabled"] as! String) == "true")
+                        let user:authUseCase! = CachceManager.shared.get(key: .user)
+                        vc.setData(meetingId: userInfo["meetingId"] as! String, callerId: userInfo["callerId"] as! String, myId: "\(user.id!)", userIds: ["\(user.id!)",userInfo["callerId"] as! String], userNames: ["\(user.name!)",userInfo["callerName"] as! String], userImages: ["\(user.image!)",userInfo["callerImage"] as! String], videoEnabled: (userInfo["videoEnabled"] as! String) == "true", audioEnabled: (userInfo["audioEnabled"] as! String) == "true")
                         
                         root.present(vc)
                     }else if((userInfo["state"] as? String) == "-1"){
@@ -138,7 +139,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                     if((userInfo["state"] as? String) == "0"){
                         let vc = UIStoryboard.ChatsModule.instantiateViewController(withIdentifier:AudioCallController.className) as! AudioCallController
                         
-                        vc.setData(meetingId: userInfo["meetingId"] as! String,isCalling: false, recipientId: userInfo["callerId"] as! String, recipientName: userInfo["callerName"] as! String, recipientImage: userInfo["callerImage"] as! String, videoEnabled: (userInfo["videoEnabled"] as! String) == "true" , audioEnabled: (userInfo["audioEnabled"] as! String) == "true")
+                        let user:authUseCase! = CachceManager.shared.get(key: .user)
+                        vc.setData(meetingId: userInfo["meetingId"] as! String, callerId: userInfo["callerId"] as! String, myId: "\(user.id!)", userIds: ["\(user.id!)",userInfo["callerId"] as! String], userNames: ["\(user.name!)",userInfo["callerName"] as! String], userImages: ["\(user.image!)",userInfo["callerImage"] as! String], videoEnabled: (userInfo["videoEnabled"] as! String) == "true", audioEnabled: (userInfo["audioEnabled"] as! String) == "true")
                         
                         root.present(vc)
                 }else if((userInfo["state"] as? String) == "-1"){
