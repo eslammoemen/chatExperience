@@ -120,10 +120,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                     }else if((userInfo["state"] as? String) == "-1"){
                         if(root is AudioCallController){
                             (root as! AudioCallController).incommingCallRejected()
+                        }else if(root is AddPeopleToCall){
+                            (root as! AddPeopleToCall).incommingCallRejected()
                         }
                     }else if((userInfo["state"] as? String) == "1"){
                         if(root is AudioCallController){
                             (root as! AudioCallController).outgoingCallccepted()
+                        }else if(root is AddPeopleToCall){
+                            (root as! AddPeopleToCall).outgoingCallccepted()
                         }
                     }
                 }
@@ -140,10 +144,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 }else if((userInfo["state"] as? String) == "-1"){
                     if(root is AudioCallController){
                         (root as! AudioCallController).incommingCallRejected()
+                    }else if(root is AddPeopleToCall){
+                        (root as! AddPeopleToCall).incommingCallRejected()
                     }
                 }else if((userInfo["state"] as? String) == "1"){
                     if(root is AudioCallController){
                         (root as! AudioCallController).outgoingCallccepted()
+                    }else if(root is AddPeopleToCall){
+                        (root as! AddPeopleToCall).outgoingCallccepted()
                     }
                 }
             }
