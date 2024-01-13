@@ -27,6 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         
+        UserDefaults.standard.setValue(false, forKey: "isInAnotherCall")
+        
         let modifier = AnyModifier { request in
             var req = request
             req.addValue("image/webp */*", forHTTPHeaderField: "Accept")

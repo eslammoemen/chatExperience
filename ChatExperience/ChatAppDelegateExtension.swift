@@ -127,8 +127,9 @@ extension AppDelegate{
     func handleCallNotification(userInfo: [AnyHashable : Any],root:UIViewController){
         if((userInfo["state"] as? String) == "0"){
             let user:authUseCase? = CachceManager.shared.get(key: .user)
-            if((user?.isInAnotherCall) != nil){
-                let notificationsData = AcceptRejectCallNotificationsData(recipientId: userInfo["callerId"] as! String, state: -1, type: "Call",meetingId: userInfo["meetingId"] as! String,callType: ((userInfo["videoEnabled"] as! String) == "true") ? "video" : "audio",reason: (user?.name!)!+" is in another call")
+            print(UserDefaults.standard.bool(forKey: "isInAnotherCall"))
+            if(UserDefaults.standard.bool(forKey: "isInAnotherCall")){
+                let notificationsData = AcceptRejectCallNotificationsData(recipientId: userInfo["callerId"] as? String, state: -1, type: "Call",meetingId: userInfo["meetingId"] as? String,callType: ((userInfo["videoEnabled"] as! String) == "true") ? "video" : "audio",reason: (user?.name!)!+" is in another call")
                 let data = try? JSONEncoder().encode(notificationsData).toJSON()
                 suit.pushNotifications(with: [
                     "user_id":Int(userInfo["callerId"] as! String)!,
