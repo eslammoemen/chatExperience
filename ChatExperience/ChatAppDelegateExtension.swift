@@ -140,12 +140,13 @@ extension AppDelegate{
                 
                 let user:authUseCase! = CachceManager.shared.get(key: .user)
                 vc.setData(meetingId: userInfo["meetingId"] as! String, callerId: userInfo["callerId"] as! String, myId: "\(user.id!)", userIds: ["\(user.id!)",userInfo["callerId"] as! String], userNames: ["\(user.name!)",userInfo["callerName"] as! String], userImages: ["\(user.image!)",userInfo["callerImage"] as! String], videoEnabled: (userInfo["videoEnabled"] as! String) == "true", audioEnabled: (userInfo["audioEnabled"] as! String) == "true")
-                
+                vc.modalPresentationStyle = .fullScreen
                 root.present(vc)
             }
         }else if((userInfo["state"] as? String) == "-1"){
             if(root is AudioCallController){
-                (root as! AudioCallController).incommingCallRejected(reason: userInfo["reason"] as! String)
+                let reason = (userInfo["reason"] as? String) ?? ""
+                (root as! AudioCallController).incommingCallRejected(reason: reason)
             }else if(root is AddPeopleToCall){
                 (root as! AddPeopleToCall).incommingCallRejected()
             }
