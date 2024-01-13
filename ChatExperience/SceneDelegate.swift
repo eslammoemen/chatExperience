@@ -73,7 +73,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         UserDefaults.standard.set(true, forKey: "isForground")
         let userSettings:updateUserSettingUseCase? = CachceManager.shared.get(key: .chatUserSettings)
-        user = CachceManager.shared.get(key: .user)
+        if var myUser=user{
+            myUser.isInAnotherCall = false
+        }
         if let myUser=user,let mySettings=userSettings{
             if(mySettings.toJSON()["status"] as! Bool && mySettings.toJSON()["isOnline"] as! Bool){
                 let doc = Firestore.firestore().collection("Users").document("\(myUser.id!)")

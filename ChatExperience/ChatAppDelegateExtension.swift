@@ -123,6 +123,39 @@ extension AppDelegate{
             notification.removeFromSuperview()
         }
     }
+    
+    func handleCallNotification(userInfo: [AnyHashable : Any],root:UIViewController){
+        if((userInfo["state"] as? String) == "0"){
+            let user:authUseCase? = CachceManager.shared.get(key: .user)
+            if((user?.isInAnotherCall) != nil){
+                let notificationsData = AcceptRejectCallNotificationsData(recipientId: userInfo["callerId"] as! String, state: -1, type: "Call",meetingId: userInfo["meetingId"] as! String,callType: ((userInfo["videoEnabled"] as! String) == "true") ? "video" : "audio",reason: (user?.name!)!+" is in another call")
+                let data = try? JSONEncoder().encode(notificationsData).toJSON()
+                suit.pushNotifications(with: [
+                    "user_id":Int(userInfo["callerId"] as! String)!,
+                    "body":data!
+                ])
+            }else{
+                let vc = UIStoryboard.ChatsModule.instantiateViewController(withIdentifier:AudioCallController.className) as! AudioCallController
+                
+                let user:authUseCase! = CachceManager.shared.get(key: .user)
+                vc.setData(meetingId: userInfo["meetingId"] as! String, callerId: userInfo["callerId"] as! String, myId: "\(user.id!)", userIds: ["\(user.id!)",userInfo["callerId"] as! String], userNames: ["\(user.name!)",userInfo["callerName"] as! String], userImages: ["\(user.image!)",userInfo["callerImage"] as! String], videoEnabled: (userInfo["videoEnabled"] as! String) == "true", audioEnabled: (userInfo["audioEnabled"] as! String) == "true")
+                
+                root.present(vc)
+            }
+        }else if((userInfo["state"] as? String) == "-1"){
+            if(root is AudioCallController){
+                (root as! AudioCallController).incommingCallRejected(reason: userInfo["reason"] as! String)
+            }else if(root is AddPeopleToCall){
+                (root as! AddPeopleToCall).incommingCallRejected()
+            }
+        }else if((userInfo["state"] as? String) == "1"){
+            if(root is AudioCallController){
+                (root as! AudioCallController).outgoingCallccepted()
+            }else if(root is AddPeopleToCall){
+                (root as! AddPeopleToCall).outgoingCallccepted()
+            }
+        }
+    }
 }
 
 class NotificationGestureRecognizer:UITapGestureRecognizer{

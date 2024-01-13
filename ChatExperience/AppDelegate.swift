@@ -23,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     var notificationRootController : UIViewController!
     var cancellables = Set<AnyCancellable>()
     var notification:UIView!
+    var suit : IntegrationUsecase!
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         
@@ -37,6 +38,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             .cacheSerializer(WebPSerializer.default),
             .requestModifier(modifier)
         ]
+        
+        let repo = IntegrationRepo()
+        suit = IntegrationUsecase(repository: repo)
+        
         
         let settings = Firestore.firestore().settings
         settings.isPersistenceEnabled = false
@@ -105,92 +110,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("notifications \(userInfo) \(UserDefaults.standard.bool(forKey: "isForground"))")
-       
-        if(UserDefaults.standard.bool(forKey: "isForground")){
-            if let root = UIApplication.topViewController() {
-                if((userInfo["type"] as? String) == "Chat"){
-                    showChatNotification(userInfo: userInfo, root: root)
-                }else if((userInfo["type"] as? String) == "Call"){
-                    if((userInfo["state"] as? String) == "0"){
-                        let vc = UIStoryboard.ChatsModule.instantiateViewController(withIdentifier:AudioCallController.className) as! AudioCallController
-                        
-                        let user:authUseCase! = CachceManager.shared.get(key: .user)
-                        vc.setData(meetingId: userInfo["meetingId"] as! String, callerId: userInfo["callerId"] as! String, myId: "\(user.id!)", userIds: ["\(user.id!)",userInfo["callerId"] as! String], userNames: ["\(user.name!)",userInfo["callerName"] as! String], userImages: ["\(user.image!)",userInfo["callerImage"] as! String], videoEnabled: (userInfo["videoEnabled"] as! String) == "true", audioEnabled: (userInfo["audioEnabled"] as! String) == "true")
-                        
-                        root.present(vc)
-                    }else if((userInfo["state"] as? String) == "-1"){
-                        if(root is AudioCallController){
-                            (root as! AudioCallController).incommingCallRejected()
-                        }else if(root is AddPeopleToCall){
-                            (root as! AddPeopleToCall).incommingCallRejected()
-                        }
-                    }else if((userInfo["state"] as? String) == "1"){
-                        if(root is AudioCallController){
-                            (root as! AudioCallController).outgoingCallccepted()
-                        }else if(root is AddPeopleToCall){
-                            (root as! AddPeopleToCall).outgoingCallccepted()
-                        }
-                    }
-                }
+        if let root = UIApplication.topViewController() {
+            if((userInfo["type"] as? String) == "Chat" && UserDefaults.standard.bool(forKey: "isForground")){
+                showChatNotification(userInfo: userInfo, root: root)
+            }else if((userInfo["type"] as? String) == "Call"){
+                handleCallNotification(userInfo: userInfo, root: root)
             }
-        }else{
-            if((userInfo["type"] as? String) == "Call"){
-                if let root = UIApplication.topViewController() {
-                    if((userInfo["state"] as? String) == "0"){
-                        let vc = UIStoryboard.ChatsModule.instantiateViewController(withIdentifier:AudioCallController.className) as! AudioCallController
-                        
-                        let user:authUseCase! = CachceManager.shared.get(key: .user)
-                        vc.setData(meetingId: userInfo["meetingId"] as! String, callerId: userInfo["callerId"] as! String, myId: "\(user.id!)", userIds: ["\(user.id!)",userInfo["callerId"] as! String], userNames: ["\(user.name!)",userInfo["callerName"] as! String], userImages: ["\(user.image!)",userInfo["callerImage"] as! String], videoEnabled: (userInfo["videoEnabled"] as! String) == "true", audioEnabled: (userInfo["audioEnabled"] as! String) == "true")
-                        
-                        root.present(vc)
-                }else if((userInfo["state"] as? String) == "-1"){
-                    if(root is AudioCallController){
-                        (root as! AudioCallController).incommingCallRejected()
-                    }else if(root is AddPeopleToCall){
-                        (root as! AddPeopleToCall).incommingCallRejected()
-                    }
-                }else if((userInfo["state"] as? String) == "1"){
-                    if(root is AudioCallController){
-                        (root as! AudioCallController).outgoingCallccepted()
-                    }else if(root is AddPeopleToCall){
-                        (root as! AddPeopleToCall).outgoingCallccepted()
-                    }
+        }
+        
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse) async {
+        let userInfo = response.notification.request.content.userInfo
+        if let root = UIApplication.topViewController() {
+            if((userInfo["type"] as? String) == "Chat"){
+                let vc = UIStoryboard.ChatsModule.instantiateViewController(withIdentifier:ConversationController.className) as! ConversationController
+                let user:authUseCase! = CachceManager.shared.get(key: .user)
+                vc.setData(myId: "\(user.id!)", myName: user.name!, myImage: user.image!, recipientId: userInfo["senderId"] as! String, recipientName: userInfo["senderName"] as! String, recipientImage: userInfo["senderImage"] as! String)
+                vc.modalPresentationStyle = .fullScreen
+                if(root is ConversationController){
+                    root.dismiss(animated: false,completion: {
+                        if let root = UIApplication.topViewController() {
+                            root.present(vc, animated: true)
+                        }
+                    })
+                }else{
+                    root.present(vc,animated: true)
                 }
             }
         }
+        
+        // ...
+        
+        // With swizzling disabled you must let Messaging know about the message, for Analytics
+        // Messaging.messaging().appDidReceiveMessage(userInfo)
+        
+        // Print full message.
+        print("notifications \(userInfo) \(UserDefaults.standard.bool(forKey: "isForground"))")
     }
-}
-
-func userNotificationCenter(_ center: UNUserNotificationCenter,
-                            didReceive response: UNNotificationResponse) async {
-    let userInfo = response.notification.request.content.userInfo
-    if let root = UIApplication.topViewController() {
-        if((userInfo["type"] as? String) == "Chat"){
-            let vc = UIStoryboard.ChatsModule.instantiateViewController(withIdentifier:ConversationController.className) as! ConversationController
-            let user:authUseCase! = CachceManager.shared.get(key: .user)
-            vc.setData(myId: "\(user.id!)", myName: user.name!, myImage: user.image!, recipientId: userInfo["senderId"] as! String, recipientName: userInfo["senderName"] as! String, recipientImage: userInfo["senderImage"] as! String)
-            vc.modalPresentationStyle = .fullScreen
-            if(root is ConversationController){
-                root.dismiss(animated: false,completion: {
-                    if let root = UIApplication.topViewController() {
-                        root.present(vc, animated: true)
-                    }
-                })
-            }else{
-                root.present(vc,animated: true)
-            }
-        }
-    }
-
-    // ...
     
-    // With swizzling disabled you must let Messaging know about the message, for Analytics
-    // Messaging.messaging().appDidReceiveMessage(userInfo)
-    
-    // Print full message.
-    print("notifications \(userInfo) \(UserDefaults.standard.bool(forKey: "isForground"))")
-}
-
 }
 
 extension AppDelegate {
