@@ -142,7 +142,7 @@ extension SceneDelegate {
             .validate()
             .publishData(queue: .global())
             .tryMap { response throws -> authUseCase in
-                print("ourToken \(String(data: response.data!, encoding: .utf8))")
+                //print("ourToken \(String(data: response.data!, encoding: .utf8))")
                 let decoeed = try JSONDecoder().decode(staticApiResponse<userData>.self, from: response.data!) as staticApiResponse<userData>
                 
                 if let token = decoeed.data?.token {
