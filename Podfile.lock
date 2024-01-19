@@ -51,7 +51,7 @@ DEPENDENCIES:
   - R.swift (~> 5.1.0)
   - SwiftyJSON (~> 4.0)
   - UIPiPView (from `https://github.com/uakihir0/UIPiPView/`, branch `main`)
-  - VideoSDKRTC
+  - VideoSDKRTC (~> 2.0.13)
 
 SPEC REPOS:
   trunk:
@@ -107,6 +107,6 @@ SPEC CHECKSUMS:
   UIPiPView: 5d60e5976a586cec12c411241aff3fcbd3ceb2ac
   VideoSDKRTC: 9565f86deed20b49866bf4563a69e9ad871921e4
 
-PODFILE CHECKSUM: a93fc07a1de63edcf825b9896f1e70ee5ee7e6ef
+PODFILE CHECKSUM: c2c61e7363e85a8a9542092a532be20fef32a9b2
 
 COCOAPODS: 1.14.2

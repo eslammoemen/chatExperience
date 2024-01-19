@@ -21,7 +21,7 @@ def _CorePods
   pod "KingfisherWebP"
   pod "BSImagePicker", "~> 3.1"
   pod 'KDCircularProgress'
-  pod 'VideoSDKRTC'
+  pod 'VideoSDKRTC', '~> 2.0.13'
   pod 'Alamofire'
   pod 'PIPKit'
   pod 'CryptoSwift', '~> 1.8.0'
