@@ -76,6 +76,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let session=AVAudioSession.sharedInstance()
         try? session.setCategory(.playback,mode: .moviePlayback)
         
+        let userSettings:updateUserSettingUseCase? = CachceManager.shared.get(key: .chatUserSettings)
+        let user:authUseCase! = CachceManager.shared.get(key: .user)
+        
         // Override point for customization after application launch.
         return true
     }
