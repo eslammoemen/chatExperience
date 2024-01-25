@@ -139,7 +139,7 @@ extension AppDelegate{
                 let vc = UIStoryboard.ChatsModule.instantiateViewController(withIdentifier:AudioCallController.className) as! AudioCallController
                 
                 let user:authUseCase! = CachceManager.shared.get(key: .user)
-                vc.setData(meetingId: userInfo["meetingId"] as! String, callerId: userInfo["callerId"] as! String, myId: "\(user.id!)", userIds: ["\(user.id!)",userInfo["callerId"] as! String], userNames: ["\(user.name!)",userInfo["callerName"] as! String], userImages: ["\(user.image!)",userInfo["callerImage"] as! String], videoEnabled: (userInfo["videoEnabled"] as! String) == "true", audioEnabled: (userInfo["audioEnabled"] as! String) == "true")
+                vc.setData(meetingId: userInfo["meetingId"] as! String, callerId: userInfo["callerId"] as! String, myId: "\(user.id!)", userIds: ["\(user.id!)",userInfo["callerId"] as! String], userNames: ["\(user.name!)",userInfo["callerName"] as! String], userImages: ["\(user.image!)",userInfo["callerImage"] as! String], videoEnabled: (userInfo["videoEnabled"] as! String) == "true", audioEnabled: (userInfo["audioEnabled"] as! String) == "true",createdAt: userInfo["createdAt"] as! String)
                 vc.modalPresentationStyle = .fullScreen
                 root.present(vc)
             }
