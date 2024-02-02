@@ -79,7 +79,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let myUser=user,let mySettings=userSettings{
             if(mySettings.toJSON()["status"] as! Bool && mySettings.toJSON()["isOnline"] as! Bool){
                 let doc = Firestore.firestore().collection("Users").document("\(myUser.id!)")
-                doc.setData(["isOnline":true,"activeStatus":mySettings.toJSON()["status"] as! Bool])
+                doc.setData(["isOnline":true,
+                             "activeStatus":mySettings.toJSON()["status"] as! Bool,
+                             "notifications":mySettings.toJSON()["notification"] as! Bool])
             }
         }
         
@@ -97,7 +99,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let myUser=user,let mySettings=userSettings{
             if(mySettings.toJSON()["status"] as! Bool && mySettings.toJSON()["isOnline"] as! Bool){
                 let doc = Firestore.firestore().collection("Users").document("\(myUser.id!)")
-                doc.setData(["isOnline":false,"activeStatus":mySettings.toJSON()["status"] as! Bool])
+                doc.setData(["isOnline":false,
+                             "activeStatus":mySettings.toJSON()["status"] as! Bool,
+                             "notifications":mySettings.toJSON()["notification"] as! Bool])
             }
         }
 //        if let root = UIApplication.topViewController() {
