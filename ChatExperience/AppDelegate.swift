@@ -35,6 +35,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             return req
         }
         
+        let audioSession = AVAudioSession.sharedInstance()
+            do {
+                try audioSession.setCategory(.playback)
+                try audioSession.setActive(true, options: [])
+            } catch {
+                print("Setting category to AVAudioSessionCategoryPlayback failed.")
+            }
+        
         KingfisherManager.shared.defaultOptions += [
             .processor(WebPProcessor.default),
             .cacheSerializer(WebPSerializer.default),
