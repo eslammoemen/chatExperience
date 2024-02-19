@@ -144,11 +144,12 @@ extension AppDelegate{
                 root.present(vc)
             }
         }else if((userInfo["state"] as? String) == "-1"){
+            let recipientId = (userInfo["recipientId"] as? String) ?? ""
             if(root is AudioCallController){
                 let reason = (userInfo["reason"] as? String) ?? ""
-                (root as! AudioCallController).incommingCallRejected(reason: reason)
+                (root as! AudioCallController).incommingCallRejected(reason: reason,recipientId: recipientId)
             }else if(root is AddPeopleToCall){
-                (root as! AddPeopleToCall).incommingCallRejected()
+                (root as! AddPeopleToCall).incommingCallRejected(recipientId: recipientId)
             }
         }else if((userInfo["state"] as? String) == "1"){
             if(root is AudioCallController){
